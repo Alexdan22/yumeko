@@ -179,6 +179,8 @@ const earningSchema = new mongoose.Schema({
     let minutes = currentTimeInTimeZone.minute;
     let payload = req.body.payload;
     console.log(payload);
+    console.log(`Acquirer data - ${payload.acquirer_data}`);
+    
     // try {
     //     const payload = req.body;
 
