@@ -177,6 +177,7 @@ const earningSchema = new mongoose.Schema({
     let date = currentTimeInTimeZone.day;
     let hour = currentTimeInTimeZone.hour;
     let minutes = currentTimeInTimeZone.minute;
+    let payload = req.body;
     console.log(payload);
     // try {
     //     const payload = req.body;
