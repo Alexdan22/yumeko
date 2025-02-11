@@ -165,6 +165,11 @@ const earningSchema = new mongoose.Schema({
 
   //ROUTE
 
+  app.get('/', function(req, res){
+    console.log('Site is reachable and receiving alerts properlyS');
+    
+  })
+
   app.post("/payment/webhook", async (req, res) => {
         
     let year = currentTimeInTimeZone.year;
