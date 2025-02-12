@@ -195,7 +195,7 @@ const earningSchema = new mongoose.Schema({
             // Save payment details to MongoDB
             const newPayment = new Payment({
                 payment_id: id,
-                amount,
+                amount: amount/100,
                 status,
                 upi: vpa,
                 email,
@@ -212,8 +212,6 @@ const earningSchema = new mongoose.Schema({
 
             await newPayment.save();
             console.log("Payment Captured & Saved:", newPayment);
-            
-            console.log(payload);
 
             return res.status(200).json({ success: true, message: "Payment recorded successfully" });
         }
