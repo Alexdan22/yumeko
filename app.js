@@ -184,7 +184,7 @@ const earningSchema = new mongoose.Schema({
         if (payload.event === "payment.captured") {
             const { id, amount, vpa, status } = payload.payload.payment.entity;
             const { email, contact } = payload.payload.payment.entity || {};
-            const rrn = payload.payload.payment.entity.acquirer_data;
+            const rrn = payload.payload.payment.entity.acquirer_data.rrn;
 
             // Check if payment already exists (avoid duplicates)
             const existingPayment = await Payment.findOne({ payment_id: id });
