@@ -135,11 +135,11 @@ const earningSchema = new mongoose.Schema({
     ]
   });
   const paymentSchema = new mongoose.Schema({
-    trnxId: String,
+    rrn: String,
     email: String,
     amount: Number,
+    upi: String,
     payment_id: { type: String, required: true, unique: true },
-    order_id: { type: String, required: true },
     username: String,
     time:{
       date: String,
@@ -177,54 +177,52 @@ const earningSchema = new mongoose.Schema({
     let date = currentTimeInTimeZone.day;
     let hour = currentTimeInTimeZone.hour;
     let minutes = currentTimeInTimeZone.minute;
-    let payload = req.body.payload;
-    console.log(payload);
-    console.log(payload.payment.entity.acquirer_data);
     
-    // try {
-    //     const payload = req.body;
+    try {
+        const payload = req.body;
 
-    //     if (payload.event === "payment.captured") {
-    //         const { id, order_id, amount, vpa, status } = payload.payload.payment.entity;
-    //         const { email, contact } = payload.payload.payment.entity || {};
+        if (payload.event === "payment.captured") {
+            const { id, amount, vpa, status } = payload.payload.payment.entity;
+            const { email, contact } = payload.payload.payment.entity || {};
+            const rrn = payload.payment.entity.acquirer_data;
 
-    //         // Check if payment already exists (avoid duplicates)
-    //         const existingPayment = await Payment.findOne({ payment_id: id });
-    //         if (existingPayment) {
-    //             return res.status(200).json({ message: "Payment already recorded" });
-    //         }
+            // Check if payment already exists (avoid duplicates)
+            const existingPayment = await Payment.findOne({ payment_id: id });
+            if (existingPayment) {
+                return res.status(200).json({ message: "Payment already recorded" });
+            }
 
-    //         // Save payment details to MongoDB
-    //         const newPayment = new Payment({
-    //             payment_id: id,
-    //             order_id,
-    //             amount,
-    //             status,
-    //             upi: vpa,
-    //             email,
-    //             contact,
-    //             time:{
-    //               date: date,
-    //               month: month,
-    //               year: year,
-    //               minutes: minutes,
-    //               hour: hour
-    //             }
-    //         });
+            // Save payment details to MongoDB
+            const newPayment = new Payment({
+                payment_id: id,
+                amount,
+                status,
+                upi: vpa,
+                email,
+                rrn,
+                contact,
+                time:{
+                  date: date,
+                  month: month,
+                  year: year,
+                  minutes: minutes,
+                  hour: hour
+                }
+            });
 
-    //         await newPayment.save();
-    //         console.log("Payment Captured & Saved:", newPayment);
+            await newPayment.save();
+            console.log("Payment Captured & Saved:", newPayment);
             
-    //         console.log(payload);
+            console.log(payload);
 
-    //         return res.status(200).json({ success: true, message: "Payment recorded successfully" });
-    //     }
+            return res.status(200).json({ success: true, message: "Payment recorded successfully" });
+        }
 
-    //     return res.status(400).json({ success: false, message: "Invalid event type" });
-    // } catch (error) {
-    //     console.error("Error processing payment:", error);
-    //     return res.status(500).json({ success: false, message: "Internal Server Error" });
-    // }
+        return res.status(400).json({ success: false, message: "Invalid event type" });
+    } catch (error) {
+        console.error("Error processing payment:", error);
+        return res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
 });
 
 
