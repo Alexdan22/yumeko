@@ -135,7 +135,7 @@ const earningSchema = new mongoose.Schema({
     ]
   });
   const paymentSchema = new mongoose.Schema({
-    rrn: String,
+    rrn: Number,
     email: String,
     amount: Number,
     upi: String,
